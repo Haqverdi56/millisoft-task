@@ -1,16 +1,8 @@
 import React, { useEffect, useState } from "react";
-import {
-  Table,
-  TableHeader,
-  TableColumn,
-  TableBody,
-  TableRow,
-  TableCell,
-  Input,
-  Button,
-} from "@heroui/react";
+import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Input, Button } from "@heroui/react";
 import Autocomp from "./autocomplete";
 import axios from "axios";
+import { useFormik } from "formik";
 
 const columns = [
   {
@@ -28,6 +20,16 @@ const columns = [
 ];
 
 function Form({ rows, setRows, allData, setAllData, deleteRow }) {
+  const formik = useFormik({
+    initialValues: {
+      name: '',
+      lastName: '',
+      order: '',
+    },
+    onSubmit: values => {
+      alert(JSON.stringify(values, null, 2));
+    },
+  });
   const [selectedWorker, setSelectedWorker] = useState(null);
 
   async function fetchData() {
@@ -47,8 +49,8 @@ function Form({ rows, setRows, allData, setAllData, deleteRow }) {
   }, []);
 
   const handlePreview = (worker) => {
-    console.log(worker);
-    
+    // console.log(worker);
+
     const lastDigit = worker.key.slice(-1);
     let message = "";
 
@@ -63,15 +65,12 @@ function Form({ rows, setRows, allData, setAllData, deleteRow }) {
       message,
     });
   };
-  console.log(selectedWorker);
-  
+  // console.log(selectedWorker);
+
   return (
-    <div className="flex flex-col relative gap-4 w-full text-black bg-white rounded-2xl mt-6">
-      <div className="p-4 z-0 flex flex-col relative justify-between gap-4 bg-content1 overflow-auto rounded-large shadow-small w-full">
-        <Table
-          aria-label="Example table with dynamic content"
-          className="min-w-full h-auto table-auto w-full"
-        >
+    <div className='flex flex-col relative gap-4 w-full text-black bg-white rounded-2xl mt-6'>
+      <div className='p-4 z-0 flex flex-col relative justify-between gap-4 bg-content1 overflow-auto rounded-large shadow-small w-full'>
+        <Table aria-label='Example table with dynamic content' className='min-w-full h-auto table-auto w-full'>
           <TableHeader
             columns={[
               // { key: "index", label: "Sıra" },
@@ -79,7 +78,7 @@ function Form({ rows, setRows, allData, setAllData, deleteRow }) {
             ]}
           >
             {(column) => (
-              <TableColumn key={column.key} className="text-center">
+              <TableColumn key={column.key} className='text-center'>
                 {column.label}
               </TableColumn>
             )}
@@ -88,7 +87,7 @@ function Form({ rows, setRows, allData, setAllData, deleteRow }) {
             {(item, index) => (
               <TableRow key={item.key}>
                 {(column) => (
-                  <TableCell className="">
+                  <TableCell className=''>
                     {column == "index" ? (
                       index + 1
                     ) : column == "name" ? (
@@ -96,26 +95,17 @@ function Form({ rows, setRows, allData, setAllData, deleteRow }) {
                         allData={allData}
                         index={index}
                         setAllData={setAllData}
+                        selectedWorker={selectedWorker}
                         setSelectedWorker={setSelectedWorker}
                       />
                     ) : column == "note" ? (
-                      <Input
-                        label="Xususi qeyd"
-                        className="bg-gray-200 max-h-10 max-w-32 text-xs"
-                        type="text"
-                      />
+                      <Input label='Xususi qeyd' className='bg-gray-200 max-h-10 max-w-32 text-xs' type='text' />
                     ) : (
-                      <div className="flex justify-evenly">
-                        <Button
-                          onPress={() => handlePreview(item)}
-                          className="bg-green-600 text-white rounded-xl mt-0"
-                        >
+                      <div className='flex justify-evenly'>
+                        <Button onPress={() => handlePreview(item)} className='bg-green-600 text-white rounded-xl mt-0'>
                           Baxis
                         </Button>
-                        <Button
-                          onPress={() => deleteRow(item.key)}
-                          className="bg-red-600 text-white rounded-xl mt-0"
-                        >
+                        <Button onPress={() => deleteRow(item.key)} className='bg-red-600 text-white rounded-xl mt-0'>
                           Sil
                         </Button>
                       </div>
@@ -128,13 +118,19 @@ function Form({ rows, setRows, allData, setAllData, deleteRow }) {
         </Table>
       </div>
       {selectedWorker && (
-                <div className="mt-4 p-4 border rounded bg-gray-100">
-                    <h3 className="font-bold text-lg">İşçi Detayları</h3>
-                    <p><strong>ID:</strong> {selectedWorker.id}</p>
-                    <p><strong>Ad:</strong> {selectedWorker.name}</p>
-                    <p><strong>Mesaj:</strong> {selectedWorker.message}</p>
-                </div>
-            )}
+        <div className='mt-4 p-4 border rounded bg-gray-100'>
+          <h3 className='font-bold text-lg'>İşçi Detayları</h3>
+          <p>
+            <strong>ID:</strong> {selectedWorker.id}
+          </p>
+          <p>
+            <strong>Ad:</strong> {selectedWorker.name}
+          </p>
+          <p>
+            <strong>Mesaj:</strong> {selectedWorker.message}
+          </p>
+        </div>
+      )}
     </div>
   );
 }

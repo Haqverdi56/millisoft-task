@@ -1,7 +1,7 @@
 import { Autocomplete, AutocompleteItem } from "@heroui/react";
 import { useEffect, useState } from "react";
 
-export default function Autocomp({ allData, index, setAllData, setSelectedWorker }) {
+export default function Autocomp({ allData, index, setAllData, selectedWorker, setSelectedWorker }) {
   const [randomNumbers, setRandomNumbers] = useState([]);
   const [updatedRows, setUpdatedRows] = useState(allData);
 
@@ -17,6 +17,7 @@ export default function Autocomp({ allData, index, setAllData, setSelectedWorker
     const lastDigit = [1, 2, 3][Math.floor(Math.random() * 3)];
     return Math.floor(randomNumber / 10) * 10 + lastDigit;
   }
+
   const addRandomIdToRows = (numbers) => {
     const updatedRows = allData.map((row, index) => ({
       ...row,
@@ -24,8 +25,6 @@ export default function Autocomp({ allData, index, setAllData, setSelectedWorker
     }));
     setUpdatedRows(updatedRows);
   };
-  // console.log('randomNumbers:', randomNumbers);
-  // console.log('updatedRows:', updatedRows);
 
   return (
     <>
@@ -34,11 +33,16 @@ export default function Autocomp({ allData, index, setAllData, setSelectedWorker
         className="max-w-xs bg-gray-200"
         defaultItems={updatedRows}
         placeholder="İşçiler"
-        onSelect={(e)=>setSelectedWorker({
-          id: e.currentTarget.value.split('-')[0],
-          name: e.currentTarget.value.split('-')[1],
-        })}
-        // console.log(e.currentTarget.value.split('-'))
+        onSelect={(e) => {
+          const selectedId = e.currentTarget.value.split('-')[0];
+          const selectedName = e.currentTarget.value.split('-')[1];
+
+          setSelectedWorker((prev) => ({
+            ...prev,
+            id: selectedId,
+            name: selectedName,
+          }));
+        }}
       >
         {(item, itemIndex) => (
           <AutocompleteItem
