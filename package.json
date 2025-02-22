@@ -10,8 +10,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@heroui/button": "^2.2.13",
+    "@heroui/input": "^2.4.13",
     "@heroui/react": "^2.7.2",
+    "@heroui/system": "^2.4.10",
+    "@heroui/theme": "^2.4.9",
+    "@react-aria/i18n": "^3.12.5",
     "@tailwindcss/vite": "^4.0.7",
+    "axios": "^1.7.9",
     "formik": "^2.4.6",
     "framer-motion": "^12.4.7",
     "react": "^19.0.0",

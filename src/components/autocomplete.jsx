@@ -1,49 +1,56 @@
-import {Autocomplete, AutocompleteItem} from "@heroui/react";
+import { Autocomplete, AutocompleteItem } from "@heroui/react";
+import { useEffect, useState } from "react";
 
-export const animals = [
-  {label: "Cat", key: "cat", description: "The second most popular pet in the world"},
-  {label: "Dog", key: "dog", description: "The most popular pet in the world"},
-  {label: "Elephant", key: "elephant", description: "The largest land animal"},
-  {label: "Lion", key: "lion", description: "The king of the jungle"},
-  {label: "Tiger", key: "tiger", description: "The largest cat species"},
-  {label: "Giraffe", key: "giraffe", description: "The tallest land animal"},
-  {
-    label: "Dolphin",
-    key: "dolphin",
-    description: "A widely distributed and diverse group of aquatic mammals",
-  },
-  {label: "Penguin", key: "penguin", description: "A group of aquatic flightless birds"},
-  {label: "Zebra", key: "zebra", description: "A several species of African equids"},
-  {
-    label: "Shark",
-    key: "shark",
-    description: "A group of elasmobranch fish characterized by a cartilaginous skeleton",
-  },
-  {
-    label: "Whale",
-    key: "whale",
-    description: "Diverse group of fully aquatic placental marine mammals",
-  },
-  {label: "Otter", key: "otter", description: "A carnivorous mammal in the subfamily Lutrinae"},
-  {label: "Crocodile", key: "crocodile", description: "A large semiaquatic reptile"},
-];
+export default function Autocomp({ allData, index, setAllData, setSelectedWorker }) {
+  const [randomNumbers, setRandomNumbers] = useState([]);
+  const [updatedRows, setUpdatedRows] = useState(allData);
 
-export default function Autocomp() {
+  useEffect(() => {
+    const numbers = allData.map(() => generateRandomNumber());
+    setRandomNumbers(numbers);
+    addRandomIdToRows(numbers);
+    setAllData(updatedRows);
+  }, []);
+
+  function generateRandomNumber() {
+    const randomNumber = Math.floor(Math.random() * 90000) + 10000;
+    const lastDigit = [1, 2, 3][Math.floor(Math.random() * 3)];
+    return Math.floor(randomNumber / 10) * 10 + lastDigit;
+  }
+  const addRandomIdToRows = (numbers) => {
+    const updatedRows = allData.map((row, index) => ({
+      ...row,
+      randomId: numbers[index],
+    }));
+    setUpdatedRows(updatedRows);
+  };
+  // console.log('randomNumbers:', randomNumbers);
+  // console.log('updatedRows:', updatedRows);
+
   return (
-    <div className="flex w-full flex-wrap md:flex-nowrap gap-4">
-      <Autocomplete className="max-w-xs" label="Select an animal">
-        {animals.map((animal) => (
-          <AutocompleteItem key={animal.key}>{animal.label}</AutocompleteItem>
-        ))}
-      </Autocomplete>
+    <>
       <Autocomplete
-        className="max-w-xs"
-        defaultItems={animals}
-        label="Favorite Animal"
-        placeholder="Search an animal"
+        aria-label={`Worker selection for row ${index + 1}`}
+        className="max-w-xs bg-gray-200"
+        defaultItems={updatedRows}
+        placeholder="İşçiler"
+        onSelect={(e)=>setSelectedWorker({
+          id: e.currentTarget.value.split('-')[0],
+          name: e.currentTarget.value.split('-')[1],
+        })}
+        // console.log(e.currentTarget.value.split('-'))
       >
-        {(item) => <AutocompleteItem key={item.key}>{item.label}</AutocompleteItem>}
+        {(item, itemIndex) => (
+          <AutocompleteItem
+            key={item.key}
+            textValue={String(item?.randomId + "-" + item.name)}
+            className="bg-white text-black gap-0"
+          >
+            <span className="mr-1">{item?.randomId}</span>-
+            <span className="ml-1">{item?.name}</span>
+          </AutocompleteItem>
+        )}
       </Autocomplete>
-    </div>
+    </>
   );
 }
